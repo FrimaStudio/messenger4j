@@ -35,7 +35,6 @@ import static com.github.messenger4j.internal.gson.GsonUtil.getPropertyAsJsonArr
 import static com.github.messenger4j.internal.gson.GsonUtil.getPropertyAsString;
 import static com.github.messenger4j.spi.MessengerHttpClient.HttpMethod.*;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 /**
  * @author Max Grabenhorst
@@ -72,40 +71,114 @@ public final class Messenger {
     private static final String FB_GRAPH_API_URL_USER = "https://graph.facebook.com/v2.11/%s?fields=first_name," +
             "last_name,profile_pic,locale,timezone,gender,is_payment_enabled,last_ad_referral&access_token=%s";
 
+    public static class Builder {
+        private String pageAccessToken;
+        private String appSecret;
+        private String verifyToken;
+
+        private MessengerHttpClient httpClient = null;
+        private Gson gson = null;
+        private JsonParser jsonParser = null;
+
+        public Builder pageAccessToken(@NonNull String pageAccessToken) {
+            this.pageAccessToken = pageAccessToken;
+            return this;
+        }
+
+        public Builder appSecret(@NonNull String appSecret) {
+            this.appSecret = appSecret;
+            return this;
+        }
+
+        public Builder verifyToken(@NonNull String verifyToken) {
+            this.verifyToken = verifyToken;
+            return this;
+        }
+
+        public Builder httpClient(@NonNull MessengerHttpClient httpClient) {
+            this.httpClient = httpClient;
+            return this;
+        }
+
+        public Builder gson(@NonNull Gson gson) {
+            this.gson = gson;
+            return this;
+        }
+
+        public Builder jsonParser(@NonNull JsonParser jsonParser) {
+            this.jsonParser = jsonParser;
+            return this;
+        }
+
+        public Messenger build() {
+            return new Messenger(
+                    pageAccessToken,
+                    appSecret,
+                    verifyToken,
+                    httpClient != null ? httpClient : new OkHttpMessengerHttpClient(new OkHttpClient()),
+                    gson != null ? gson : GsonFactory.createGson(),
+                    jsonParser != null ? jsonParser : new JsonParser()
+            );
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    @Deprecated
+    public static Messenger create(@NonNull String pageAccessToken, @NonNull String appSecret, @NonNull String verifyToken) {
+        return new Builder()
+                .pageAccessToken(pageAccessToken)
+                .appSecret(appSecret)
+                .verifyToken(verifyToken)
+                .build();
+    }
+
+    @Deprecated
+    public static Messenger create(@NonNull String pageAccessToken, @NonNull String appSecret,
+                                   @NonNull String verifyToken, @NonNull Optional<MessengerHttpClient> customHttpClient) {
+
+        final Builder builder = new Builder()
+                .pageAccessToken(pageAccessToken)
+                .appSecret(appSecret)
+                .verifyToken(verifyToken);
+
+        customHttpClient.ifPresent(builder::httpClient);
+
+        return builder.build();
+    }
+
     private final String pageAccessToken;
     private final String appSecret;
     private final String verifyToken;
     private final String messagesRequestUrl;
     private final String messengerProfileRequestUrl;
     private final MessengerHttpClient httpClient;
-
     private final Gson gson;
     private final JsonParser jsonParser;
 
-    public static Messenger create(@NonNull String pageAccessToken, @NonNull String appSecret, @NonNull String verifyToken) {
-        return create(pageAccessToken, appSecret, verifyToken, empty());
-    }
-
-    public static Messenger create(@NonNull String pageAccessToken, @NonNull String appSecret,
-                                   @NonNull String verifyToken, @NonNull Optional<MessengerHttpClient> customHttpClient) {
-
-        return new Messenger(pageAccessToken, appSecret, verifyToken, customHttpClient);
-    }
-
-    private Messenger(String pageAccessToken, String appSecret, String verifyToken, Optional<MessengerHttpClient> httpClient) {
+    private Messenger(
+            @NonNull String pageAccessToken,
+            @NonNull String appSecret,
+            @NonNull String verifyToken,
+            @NonNull MessengerHttpClient httpClient,
+            @NonNull Gson gson,
+            @NonNull JsonParser jsonParser
+    ) {
         this.pageAccessToken = pageAccessToken;
         this.appSecret = appSecret;
         this.verifyToken = verifyToken;
         this.messagesRequestUrl = String.format(FB_GRAPH_API_URL_MESSAGES, pageAccessToken);
         this.messengerProfileRequestUrl = String.format(FB_GRAPH_API_URL_MESSENGER_PROFILE, pageAccessToken);
-        this.httpClient = httpClient.orElse(new OkHttpMessengerHttpClient(new OkHttpClient()));
+        this.httpClient = httpClient;
 
-        this.gson = GsonFactory.createGson();
-        this.jsonParser = new JsonParser();
+        this.gson = gson;
+        this.jsonParser = jsonParser;
     }
 
     public CompletionStage<MessageResponse> send(@NonNull Payload payload) {
-        return doRequest(POST, messagesRequestUrl, of(payload), MessageResponseFactory::create);
+        return doRequest(POST, messagesRequestUrl, payload, MessageResponseFactory::create);
     }
 
     public void onReceiveEvents(@NonNull String requestPayload, String signature,
