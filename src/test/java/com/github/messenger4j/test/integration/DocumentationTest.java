@@ -17,10 +17,11 @@ import com.github.messenger4j.webhook.event.TextMessageEvent;
 import com.github.messenger4j.webhook.event.attachment.Attachment;
 import com.github.messenger4j.webhook.event.attachment.LocationAttachment;
 import com.github.messenger4j.webhook.event.attachment.RichMediaAttachment;
-import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -44,7 +45,7 @@ public class DocumentationTest {
 
     private final static class MyCustomMessengerHttpClient implements MessengerHttpClient {
         @Override
-        public HttpResponse execute(HttpMethod httpMethod, String url, String jsonBody) throws IOException {
+        public CompletionStage<HttpResponse> execute(HttpMethod httpMethod, String url, String jsonBody) {
             return null;
         }
     }
@@ -71,7 +72,7 @@ public class DocumentationTest {
                 "\"seq\":123,\"text\":\"34wrr3wr\"}}]}]}";
         final String signature = "sha1=3daa41999293ff66c3eb313e04bcf77861bb0276";
 
-        messenger.onReceiveEvents(payload, of(signature), event -> {
+        messenger.onReceiveEvents(payload, signature, event -> {
             final String senderId = event.senderId();
             final Instant timestamp = event.timestamp();
 
@@ -131,7 +132,7 @@ public class DocumentationTest {
                 "    }]\n" +
                 "}";
 
-        messenger.onReceiveEvents(payload, Optional.empty(), event -> {
+        messenger.onReceiveEvents(payload, null, event -> {
             final String senderId = event.senderId();
             final Instant timestamp = event.timestamp();
 
@@ -185,7 +186,7 @@ public class DocumentationTest {
 
         final Messenger messenger = Messenger.create("PAGE_ACCESS_TOKEN", "APP_SECRET", "VERIFY_TOKEN");
 
-        messenger.onReceiveEvents(payload, Optional.empty(), event -> {
+        messenger.onReceiveEvents(payload, null, event -> {
             final String senderId = event.senderId();
             if (event.isTextMessageEvent()) {
                 final String text = event.asTextMessageEvent().text();
@@ -194,11 +195,13 @@ public class DocumentationTest {
                 final MessagePayload messagePayload = MessagePayload.create(senderId,
                         MessagingType.RESPONSE, textMessage);
 
-                try {
-                    messenger.send(messagePayload);
-                } catch (MessengerApiException | MessengerIOException e) {
-                    // Oops, something went wrong
-                }
+                messenger.send(messagePayload).whenComplete((messageResponse, throwable) -> {
+                    if (throwable != null) {
+                        // Oops, something went wrong
+                    } else {
+                        // Use response here
+                    }
+                });
             }
         });
         // end::doc-EchoExample[]

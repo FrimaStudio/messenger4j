@@ -76,7 +76,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then - throw exception
     }
@@ -128,7 +128,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -192,7 +192,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -229,7 +229,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -280,7 +280,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -318,7 +318,7 @@ public class WebhookTest {
                 "\"amount\":-50},{\"name\":\"$100 Off Coupon\",\"amount\":-100}]}}]}}]}]}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -366,7 +366,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -411,7 +411,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -457,7 +457,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -510,7 +510,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -576,7 +576,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -626,7 +626,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -672,7 +672,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -719,7 +719,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -766,7 +766,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -811,7 +811,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -851,7 +851,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -890,7 +890,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -929,7 +929,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -969,7 +969,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -1008,7 +1008,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -1046,7 +1046,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -1101,7 +1101,7 @@ public class WebhookTest {
                 "}";
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -1125,7 +1125,7 @@ public class WebhookTest {
         final String payload = null;
 
         //when
-        messenger.onReceiveEvents(payload, empty(), mockEventHandler);
+        messenger.onReceiveEvents(payload, null, mockEventHandler);
 
         //then - throw exception
     }
@@ -1140,7 +1140,7 @@ public class WebhookTest {
         final String signature = "sha1=3daa41999293ff66c3eb313e04bcf77861bb0276";
 
         //when
-        messenger.onReceiveEvents(payload, of(signature), mockEventHandler);
+        messenger.onReceiveEvents(payload, signature, mockEventHandler);
 
         //then
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
@@ -1160,7 +1160,7 @@ public class WebhookTest {
         final String signature = "sha1=3daa41999293ff66c3eb313e04bcf77861bb0276";
 
         //when
-        messenger.onReceiveEvents(payload, of(signature), mockEventHandler);
+        messenger.onReceiveEvents(payload, signature, mockEventHandler);
 
         //then - throw exception
     }

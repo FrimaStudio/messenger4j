@@ -71,6 +71,8 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,7 +98,7 @@ public class SendTest {
 
     @Before
     public void beforeEach() throws Exception {
-        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(fakeResponse);
+        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(CompletableFuture.completedFuture(fakeResponse));
     }
 
     @Test
@@ -923,14 +925,14 @@ public class SendTest {
                 "  \"message_id\": \"mid.1473372944816:94f72b88c597657974\",\n" +
                 "  \"attachment_id\": \"1745504518999123\"\n" +
                 "}");
-        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(successfulResponse);
+        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(CompletableFuture.completedFuture(successfulResponse));
 
         // tag::send-SuccessResponse[]
         final UrlRichMediaAsset richMediaAsset = UrlRichMediaAsset.create(IMAGE, new URL("http://image.url"), of(true));
         final MessagePayload payload = MessagePayload.create("USER_ID", MessagingType.RESPONSE,
                 RichMediaMessage.create(richMediaAsset));
 
-        final MessageResponse messageResponse = messenger.send(payload);
+        final MessageResponse messageResponse = messenger.send(payload).toCompletableFuture().get();
 
         final Optional<String> recipientId = messageResponse.recipientId();
         final Optional<String> messageId = messageResponse.messageId();
@@ -954,15 +956,15 @@ public class SendTest {
                 "    \"fbtrace_id\": \"BLBz/WZt8dN\"\n" +
                 "  }\n" +
                 "}");
-        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(errorResponse);
+        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(CompletableFuture.completedFuture(errorResponse));
 
         MessengerApiException messengerApiException = null;
         try {
             final MessagePayload payload = MessagePayload.create("test", MessagingType.RESPONSE,
                     TextMessage.create("test"));
-            messenger.send(payload);
-        } catch (MessengerApiException e) {
-            messengerApiException = e;
+            messenger.send(payload).toCompletableFuture().get();
+        } catch (Exception e) {
+            messengerApiException = (MessengerApiException) e.getCause();
         }
 
         assertThat(messengerApiException, is(notNullValue()));

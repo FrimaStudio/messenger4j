@@ -44,6 +44,8 @@ import com.github.messenger4j.spi.MessengerHttpClient.HttpResponse;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -65,7 +67,7 @@ public class MessengerProfileTest {
 
     @Before
     public void beforeEach() throws Exception {
-        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), any())).thenReturn(fakeResponse);
+        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), any())).thenReturn(CompletableFuture.completedFuture(fakeResponse));
     }
 
     @Test
@@ -465,11 +467,11 @@ public class MessengerProfileTest {
     @Test
     public void shouldHandleUpdateSuccessResponse() throws Exception {
         final HttpResponse successfulResponse = new HttpResponse(200, "{\"result\": \"success\"}");
-        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(successfulResponse);
+        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(CompletableFuture.completedFuture(successfulResponse));
 
         final MessengerSettings messengerSettings = MessengerSettings.create(of(StartButton.create("test")),
                 empty(), empty(), empty(), empty(), empty(), empty());
-        final SetupResponse setupResponse = messenger.updateSettings(messengerSettings);
+        final SetupResponse setupResponse = messenger.updateSettings(messengerSettings).toCompletableFuture().get();
 
         assertThat(setupResponse, is(notNullValue()));
         assertThat(setupResponse.result(), is(equalTo("success")));
@@ -485,15 +487,15 @@ public class MessengerProfileTest {
                 "    \"fbtrace_id\": \"BLBz/WZt8dN\"\n" +
                 "  }\n" +
                 "}");
-        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(errorResponse);
+        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(CompletableFuture.completedFuture(errorResponse));
 
         MessengerApiException messengerApiException = null;
         try {
             final MessengerSettings messengerSettings = MessengerSettings.create(of(StartButton.create("test")),
                     empty(), empty(), empty(), empty(), empty(), empty());
-            messenger.updateSettings(messengerSettings);
-        } catch (MessengerApiException e) {
-            messengerApiException = e;
+            messenger.updateSettings(messengerSettings).toCompletableFuture().get();
+        } catch (Exception e) {
+            messengerApiException = (MessengerApiException)e.getCause();
         }
 
         assertThat(messengerApiException, is(notNullValue()));
@@ -506,9 +508,9 @@ public class MessengerProfileTest {
     @Test
     public void shouldHandleDeleteSuccessResponse() throws Exception {
         final HttpResponse successfulResponse = new HttpResponse(200, "{\"result\": \"success\"}");
-        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(successfulResponse);
+        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(CompletableFuture.completedFuture(successfulResponse));
 
-        final SetupResponse setupResponse = messenger.deleteSettings(MessengerSettingProperty.GREETING);
+        final SetupResponse setupResponse = messenger.deleteSettings(MessengerSettingProperty.GREETING).toCompletableFuture().get();
 
         assertThat(setupResponse, is(notNullValue()));
         assertThat(setupResponse.result(), is(equalTo("success")));
@@ -524,13 +526,13 @@ public class MessengerProfileTest {
                 "    \"fbtrace_id\": \"BLBz/WZt8dN\"\n" +
                 "  }\n" +
                 "}");
-        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(errorResponse);
+        when(mockHttpClient.execute(any(HttpMethod.class), anyString(), anyString())).thenReturn(CompletableFuture.completedFuture(errorResponse));
 
         MessengerApiException messengerApiException = null;
         try {
-            messenger.deleteSettings(MessengerSettingProperty.GREETING);
-        } catch (MessengerApiException e) {
-            messengerApiException = e;
+            messenger.deleteSettings(MessengerSettingProperty.GREETING).toCompletableFuture().get();
+        } catch (Exception e) {
+            messengerApiException = (MessengerApiException) e.getCause();
         }
 
         assertThat(messengerApiException, is(notNullValue()));

@@ -1,6 +1,7 @@
 package com.github.messenger4j.spi;
 
 import java.io.IOException;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Max Grabenhorst
@@ -9,7 +10,7 @@ import java.io.IOException;
  */
 public interface MessengerHttpClient {
 
-    HttpResponse execute(HttpMethod httpMethod, String url, String jsonBody) throws IOException;
+    CompletionStage<HttpResponse> execute(HttpMethod httpMethod, String url, String jsonBody);
 
     /**
      * @since 1.0.0

@@ -19,6 +19,9 @@ import com.github.messenger4j.spi.MessengerHttpClient;
 import com.github.messenger4j.spi.MessengerHttpClient.HttpResponse;
 import com.github.messenger4j.userprofile.UserProfile;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import org.junit.Test;
 
 /**
@@ -53,10 +56,10 @@ public class UserProfileTest {
                 "    \"ad_id\": \"6045246247433\"\n" +
                 "  }\n" +
                 "}");
-        when(mockHttpClient.execute(eq(GET), anyString(), isNull())).thenReturn(successfulResponse);
+        when(mockHttpClient.execute(eq(GET), anyString(), isNull())).thenReturn(CompletableFuture.completedFuture(successfulResponse));
 
         // tag::user-QueryProfile[]
-        final UserProfile userProfile = messenger.queryUserProfile(userId);
+        final UserProfile userProfile = messenger.queryUserProfile(userId).toCompletableFuture().get();
         // end::user-QueryProfile[]
 
         final String expectedRequestUrl = String.format(FB_GRAPH_API_URL, userId, PAGE_ACCESS_TOKEN);
@@ -81,13 +84,13 @@ public class UserProfileTest {
     @Test
     public void shouldHandleEmptyResponse() throws Exception {
         final HttpResponse emptyResponse = new HttpResponse(200, "{}");
-        when(mockHttpClient.execute(eq(GET), anyString(), isNull())).thenReturn(emptyResponse);
+        when(mockHttpClient.execute(eq(GET), anyString(), isNull())).thenReturn(CompletableFuture.completedFuture(emptyResponse));
 
         MessengerApiException messengerApiException = null;
         try {
-            messenger.queryUserProfile("USER_ID");
-        } catch (MessengerApiException e) {
-            messengerApiException = e;
+            messenger.queryUserProfile("USER_ID").toCompletableFuture().get();
+        } catch (ExecutionException e) {
+            messengerApiException = (MessengerApiException) e.getCause();
         }
 
         assertThat(messengerApiException, is(notNullValue()));
@@ -107,13 +110,13 @@ public class UserProfileTest {
                 "    \"fbtrace_id\": \"BLBz/WZt8dN\"\n" +
                 "  }\n" +
                 "}");
-        when(mockHttpClient.execute(eq(GET), anyString(), isNull())).thenReturn(errorResponse);
+        when(mockHttpClient.execute(eq(GET), anyString(), isNull())).thenReturn(CompletableFuture.completedFuture(errorResponse));
 
         MessengerApiException messengerApiException = null;
         try {
-            messenger.queryUserProfile("USER_ID");
-        } catch (MessengerApiException e) {
-            messengerApiException = e;
+            messenger.queryUserProfile("USER_ID").toCompletableFuture().get();
+        } catch (Exception e) {
+            messengerApiException = (MessengerApiException) e.getCause();
         }
 
         assertThat(messengerApiException, is(notNullValue()));
